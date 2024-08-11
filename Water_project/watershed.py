@@ -57,7 +57,7 @@ if selected == 'Home':
 
         # Input Parameters for Sharifi & Razaz (2014)
         area = st.number_input("Enter Watershed Area (A) in square meters", min_value=0.0, key='area_sharifi')
-        dd = st.number_input("Enter Watershed Diameter (DD) in meters", min_value=0.0, key='dd_sharifi')
+        dd = st.number_input("Enter Watershed Length (DD) in meters", min_value=0.0, key='dd_sharifi')
 
         # Calculate Button for Sharifi & Razaz (2014)
         if st.button("Calculate Time of Concentration (Sharifi & Razaz)", key='calculate_sharifi'):
