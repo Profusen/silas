@@ -9,7 +9,7 @@ img = Image.open('developers_institute LOGO.png')
 st.set_page_config(page_title='SILAS WaterShed', page_icon=img)
 
 selected = option_menu(
-    menu_title="SILAS WaterShed Models",  # required
+    menu_title="SILAS WaterShed TOC",  # required
     options=["Home", "Help"],  # required
     icons=["house", "book"],  # optional
     menu_icon="water",  # optional
@@ -78,7 +78,7 @@ if selected == 'Home':
                 area_values = pd.Series(range(1, 21))
                 tc_values = sharifi_razaz(area_values, dd)
                 sns.lineplot(x=area_values, y=tc_values, ax=ax[1])
-                ax[1].set_title("Area vs. Time of Concentration")
+                ax[1].set_title("Time of Concentration Vs. Area")
                 ax[1].set_xlabel("Watershed Area (A)")
                 ax[1].set_ylabel("Time of Concentration (hours)")
                 ax[1].set_ylim(0.37, 417.9)
@@ -126,7 +126,7 @@ if selected == 'Home':
                 length_values = pd.Series(range(1, 21))
                 tc_values = papadakis_kazan(length_values, roughness, slope, intensity)
                 sns.lineplot(x=length_values, y=tc_values, ax=ax[0, 1])
-                ax[0, 1].set_title("Length vs. Time of Concentration")
+                ax[0, 1].set_title("Time of Concentration Vs Length")
                 ax[0, 1].set_xlabel("Watershed Length (L)")
                 ax[0, 1].set_ylabel("Time of Concentration (hours)")
                 ax[0, 1].set_ylim(0.87, 2.26)
@@ -140,7 +140,7 @@ if selected == 'Home':
                 intensity_values = pd.Series(range(1, 21))
                 tc_values_intensity = papadakis_kazan(length, roughness, slope, intensity_values)
                 sns.lineplot(x=intensity_values, y=tc_values_intensity, ax=ax[1, 1])
-                ax[1, 1].set_title("Rainfall Intensity vs. Time of Concentration")
+                ax[1, 1].set_title("Time of Concentration Vs. Rainfall Intensity")
                 ax[1, 1].set_xlabel("Rainfall Intensity (i)")
                 ax[1, 1].set_ylabel("Time of Concentration (hours)")
                 ax[1, 1].set_ylim(0.87, 2.26)
