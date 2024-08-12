@@ -8,7 +8,6 @@ from streamlit_option_menu import option_menu
 img = Image.open('developers_institute LOGO.png')
 st.set_page_config(page_title='SILAS WaterShed', page_icon=img)
 
-
 selected = option_menu(
     menu_title="SILAS WaterShed Models",  # required
     options=["Home", "Help"],  # required
@@ -18,6 +17,7 @@ selected = option_menu(
     orientation="horizontal",
 )
 flag = Image.open('watershed.jpeg')
+
 
 # Function to calculate Time of Concentration using Sharifi & Razaz (2014)
 
@@ -57,7 +57,7 @@ if selected == 'Home':
 
         # Input Parameters for Sharifi & Razaz (2014)
         area = st.number_input("Enter Watershed Area (A) in square meters", min_value=0.0, key='area_sharifi')
-        dd = st.number_input("Enter Watershed Length (DD) in meters", min_value=0.0, key='dd_sharifi')
+        dd = st.number_input("Enter Watershed Diameter (DD) in meters", min_value=0.0, key='dd_sharifi')
 
         # Calculate Button for Sharifi & Razaz (2014)
         if st.button("Calculate Time of Concentration (Sharifi & Razaz)", key='calculate_sharifi'):
@@ -72,14 +72,16 @@ if selected == 'Home':
                 # Distribution Plot for Area
                 sns.histplot([area], kde=True, ax=ax[0])
                 ax[0].set_title("Distribution of Watershed Area")
+                ax[0].set_xlim(0.1, 20.0)
 
                 # Line Plot showing relationship between Area and Time of Concentration
-                area_values = pd.Series(range(1000, int(area) + 100000, 10000))
+                area_values = pd.Series(range(1, 21))
                 tc_values = sharifi_razaz(area_values, dd)
                 sns.lineplot(x=area_values, y=tc_values, ax=ax[1])
                 ax[1].set_title("Area vs. Time of Concentration")
                 ax[1].set_xlabel("Watershed Area (A)")
                 ax[1].set_ylabel("Time of Concentration (hours)")
+                ax[1].set_ylim(0.37, 417.9)
 
                 st.pyplot(fig)
             else:
@@ -109,7 +111,8 @@ if selected == 'Home':
         if st.button("Calculate Time of Concentration (Papadakis & Kazan)", key='calculate_papadakis'):
             if length and roughness and slope and intensity:
                 tc_papadakis_kazan = papadakis_kazan(length, roughness, slope, intensity)
-                st.success(f"**Time of Concentration using Papadakis & Kazan (1986):** = {tc_papadakis_kazan:.2f} hours")
+                st.success(
+                    f"**Time of Concentration using Papadakis & Kazan (1986):** = {tc_papadakis_kazan:.2f} hours")
 
                 # Visualization
                 fig, ax = plt.subplots(2, 2, figsize=(14, 12))
@@ -117,26 +120,30 @@ if selected == 'Home':
                 # Distribution Plot for Length
                 sns.histplot([length], kde=True, ax=ax[0, 0])
                 ax[0, 0].set_title("Distribution of Watershed Length")
+                ax[0, 0].set_xlim(0.5, 20.4)
 
                 # Line Plot showing relationship between Length and Time of Concentration
-                length_values = pd.Series(range(500, int(length) + 5000, 500))
+                length_values = pd.Series(range(1, 21))
                 tc_values = papadakis_kazan(length_values, roughness, slope, intensity)
                 sns.lineplot(x=length_values, y=tc_values, ax=ax[0, 1])
                 ax[0, 1].set_title("Length vs. Time of Concentration")
                 ax[0, 1].set_xlabel("Watershed Length (L)")
                 ax[0, 1].set_ylabel("Time of Concentration (hours)")
+                ax[0, 1].set_ylim(0.87, 2.26)
 
                 # Distribution Plot for Rainfall Intensity
                 sns.histplot([intensity], kde=True, ax=ax[1, 0])
                 ax[1, 0].set_title("Distribution of Rainfall Intensity")
+                ax[1, 0].set_xlim(0.1, 20.0)
 
                 # Line Plot showing relationship between Intensity and Time of Concentration
-                intensity_values = pd.Series(range(1, int(intensity) + 20, 1))
+                intensity_values = pd.Series(range(1, 21))
                 tc_values_intensity = papadakis_kazan(length, roughness, slope, intensity_values)
                 sns.lineplot(x=intensity_values, y=tc_values_intensity, ax=ax[1, 1])
                 ax[1, 1].set_title("Rainfall Intensity vs. Time of Concentration")
                 ax[1, 1].set_xlabel("Rainfall Intensity (i)")
                 ax[1, 1].set_ylabel("Time of Concentration (hours)")
+                ax[1, 1].set_ylim(0.87, 2.26)
 
                 st.pyplot(fig)
             else:
@@ -146,8 +153,6 @@ if selected == 'Home':
     # if st.checkbox('**Display Bar Chart Comparing Both Models**'):
     # Display Bar Chart Comparing Both Models
     if tc_sharifi_razaz is not None or tc_papadakis_kazan is not None:
-        st.write('')
-        st.write('')
         st.write("### Comparison of Time of Concentration Between Models")
         model_data = {
             'Model': ['Sharifi & Razaz (2014)', 'Papadakis & Kazan (1986)'],
@@ -158,8 +163,10 @@ if selected == 'Home':
         fig, ax = plt.subplots(figsize=(10, 6))
         sns.barplot(x='Model', y='Time of Concentration (hours)', data=model_df, ax=ax)
         ax.set_title("Comparison of Time of Concentration Between Models")
+        ax.set_ylim(0.37, 417.9 if tc_sharifi_razaz is not None else 2.26)
 
         st.pyplot(fig)
+
         #
         # else:
         #
@@ -176,7 +183,6 @@ elif selected == 'Help':
     - After calculation, visualizations related to the parameters and results will be displayed.
     - A bar chart comparing the time of concentration calculated by both models will be displayed if both are calculated.
     """)
-
 
 # Sidebar for
 
